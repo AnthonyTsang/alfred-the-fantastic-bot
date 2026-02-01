@@ -1,0 +1,13 @@
+{
+  "name": "myq",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@hjdhjd/myq": "^7.6.0"
+  }
+}

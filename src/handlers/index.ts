@@ -1,0 +1,1 @@
+export { registerMessageHandler } from "./message";
