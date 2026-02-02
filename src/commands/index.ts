@@ -2,8 +2,9 @@ import type TelegramBot from "node-telegram-bot-api";
 import { startCommand } from "./start";
 import { cliPathCommand } from "./cliPath";
 import { myqCommand } from "./myq";
+import { statusCommand } from "./status";
 
-const commands = [startCommand, cliPathCommand, myqCommand];
+const commands = [startCommand, cliPathCommand, myqCommand, statusCommand];
 
 export function registerCommands(bot: TelegramBot) {
   // Register command handlers

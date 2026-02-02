@@ -2,6 +2,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 import type { SDKAssistantMessage, SDKResultMessage } from "@anthropic-ai/claude-agent-sdk";
 import { config } from "../config";
 import { log } from "../utils";
+import { trackClaudeCall } from "./usage";
 import fs from "fs";
 
 // Map from Telegram message ID to Claude session ID
@@ -64,6 +65,9 @@ export async function* queryAgentStream(
   } else {
     fullPrompt = prompt;
   }
+
+  // Track Claude API call
+  trackClaudeCall();
 
   const agentQuery = query({
     prompt: fullPrompt as string,
