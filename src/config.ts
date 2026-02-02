@@ -5,6 +5,7 @@ class Config {
   readonly anthropicApiKey: string;
   readonly claudeCodePath: string;
   readonly assemblyAiApiKey?: string;
+  readonly allowedUsers: number[];
 
   constructor() {
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -27,6 +28,16 @@ class Config {
 
     // AssemblyAI API key (optional, for voice message transcription)
     this.assemblyAiApiKey = process.env.ASSEMBLYAI_API_KEY;
+
+    // Allowed Telegram user IDs (comma-separated list)
+    // If empty or not set, all users are allowed (for development convenience)
+    const allowedUsersEnv = process.env.ALLOWED_USERS;
+    this.allowedUsers = allowedUsersEnv
+      ? allowedUsersEnv
+          .split(",")
+          .map((id) => parseInt(id.trim(), 10))
+          .filter((id) => !isNaN(id))
+      : [];
   }
 }
 

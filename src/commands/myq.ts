@@ -1,5 +1,5 @@
 import type TelegramBot from "node-telegram-bot-api";
-import { log } from "../utils";
+import { log, isUserAuthorized } from "../utils";
 import { queryAgentStream, saveSessionId } from "../services";
 
 export const myqCommand = {
@@ -7,6 +7,11 @@ export const myqCommand = {
   description: "Control myQ garage door",
   handler: (bot: TelegramBot) => {
     bot.onText(/\/myq(?:\s+(.+))?/, async (msg, match) => {
+      // Check if user is authorized - silently ignore unauthorized users
+      if (!isUserAuthorized(msg.from?.id)) {
+        return;
+      }
+
       const chatId = msg.chat.id;
       const messageId = msg.message_id;
       const args = match?.[1]?.trim();
