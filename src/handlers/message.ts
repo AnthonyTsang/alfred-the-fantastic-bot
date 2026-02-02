@@ -1,5 +1,5 @@
 import TelegramBot from "node-telegram-bot-api";
-import { log, splitMessage, markdownToTelegram } from "../utils";
+import { log, splitMessage, markdownToTelegram, isUserAuthorized } from "../utils";
 import {
   queryAgentStream,
   getSessionId,
@@ -14,6 +14,11 @@ export function registerMessageHandler(bot: TelegramBot) {
   bot.on("message", async (msg) => {
     const chatId = msg.chat.id;
     const messageId = msg.message_id;
+
+    // Check if user is authorized - silently ignore unauthorized users
+    if (!isUserAuthorized(msg.from?.id)) {
+      return;
+    }
 
     let text: string | undefined;
     let isVoiceMessage = false;
