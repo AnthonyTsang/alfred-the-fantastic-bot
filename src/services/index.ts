@@ -10,7 +10,9 @@ export {
 export { transcribeAudio } from "./transcription";
 
 export {
+  NotificationService,
   initNotificationService,
+  getNotificationService,
   notifyError,
   notifyAlert,
 } from "./notification";
