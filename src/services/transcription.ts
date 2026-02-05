@@ -1,6 +1,7 @@
 import { AssemblyAI } from "assemblyai";
 import { config } from "../config";
 import { log } from "../utils";
+import { trackAssemblyAiUsage } from "./usageMonitor";
 
 let client: AssemblyAI | null = null;
 
@@ -32,10 +33,17 @@ export async function transcribeAudio(audioUrl: string): Promise<string> {
     throw new Error(`Transcription failed: ${transcript.error}`);
   }
 
+  // Track usage for free tier monitoring
+  // audio_duration is in seconds (or null if not available)
+  if (transcript.audio_duration) {
+    await trackAssemblyAiUsage(transcript.audio_duration);
+  }
+
   log("info", "Transcription completed", {
     text: transcript.text,
     confidence: transcript.confidence,
     language: transcript.language_code,
+    audioDuration: transcript.audio_duration,
   });
 
   return transcript.text || "";

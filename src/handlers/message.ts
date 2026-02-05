@@ -5,6 +5,7 @@ import {
   getSessionId,
   saveSessionId,
   transcribeAudio,
+  notifyError,
   type AgentMessageType,
   type ImageAttachment,
 } from "../services";
@@ -56,6 +57,9 @@ export function registerMessageHandler(bot: TelegramBot) {
         // Use caption as text if provided
         text = msg.caption || "What's in this image?";
       } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+
         log("error", "Error processing photo", {
           chatId,
           messageId,
@@ -64,6 +68,12 @@ export function registerMessageHandler(bot: TelegramBot) {
               ? { message: error.message, stack: error.stack }
               : String(error),
         });
+
+        // Notify admin about the error
+        await notifyError(
+          `Error processing photo in chat ${chatId}: ${errorMessage}`
+        );
+
         await bot.sendMessage(chatId, "Error processing the image.", {
           reply_to_message_id: messageId,
         });
@@ -115,6 +125,9 @@ export function registerMessageHandler(bot: TelegramBot) {
           text,
         });
       } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+
         log("error", "Voice transcription error", {
           chatId,
           messageId,
@@ -124,8 +137,11 @@ export function registerMessageHandler(bot: TelegramBot) {
               : String(error),
         });
 
-        const errorMessage =
-          error instanceof Error ? error.message : "An unknown error occurred";
+        // Notify admin about the error
+        await notifyError(
+          `Voice transcription error in chat ${chatId}: ${errorMessage}`
+        );
+
         await bot.sendMessage(
           chatId,
           `Error transcribing voice message: ${errorMessage}`,
@@ -213,6 +229,9 @@ export function registerMessageHandler(bot: TelegramBot) {
     } catch (error) {
       clearInterval(typingInterval);
 
+      const errorMessage =
+        error instanceof Error ? error.message : "An unknown error occurred";
+
       log("error", "Agent SDK error", {
         chatId,
         messageId,
@@ -222,8 +241,11 @@ export function registerMessageHandler(bot: TelegramBot) {
             : String(error),
       });
 
-      const errorMessage =
-        error instanceof Error ? error.message : "An unknown error occurred";
+      // Notify admin about the error
+      await notifyError(
+        `Agent SDK error in chat ${chatId}: ${errorMessage}`
+      );
+
       await bot.sendMessage(chatId, `Error: ${errorMessage}`, {
         reply_to_message_id: messageId,
       });

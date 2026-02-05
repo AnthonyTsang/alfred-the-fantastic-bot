@@ -5,6 +5,8 @@ class Config {
   readonly anthropicApiKey: string;
   readonly claudeCodePath: string;
   readonly assemblyAiApiKey?: string;
+  readonly adminChatId?: number;
+  readonly assemblyAiFreeMonthlyHours: number;
 
   constructor() {
     const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -27,6 +29,18 @@ class Config {
 
     // AssemblyAI API key (optional, for voice message transcription)
     this.assemblyAiApiKey = process.env.ASSEMBLYAI_API_KEY;
+
+    // Admin chat ID for notifications (optional)
+    const adminChatIdStr = process.env.ADMIN_CHAT_ID;
+    if (adminChatIdStr) {
+      this.adminChatId = parseInt(adminChatIdStr, 10);
+    }
+
+    // AssemblyAI free tier monthly hours (default: 100 hours)
+    this.assemblyAiFreeMonthlyHours = parseInt(
+      process.env.ASSEMBLYAI_FREE_MONTHLY_HOURS || "100",
+      10
+    );
   }
 }
 
